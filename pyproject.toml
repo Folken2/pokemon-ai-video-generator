@@ -1,0 +1,15 @@
+[project]
+name = "pokemon-natural-geo"
+version = "0.1.0"
+description = "Photorealistic Pokémon nature documentary production pipeline"
+requires-python = ">=3.10"
+dependencies = [
+    "google-generativeai>=0.8.0",
+    "python-dotenv>=1.0.0",
+    "pillow>=10.0.0",
+    "pyjwt>=2.8.0",
+    "requests>=2.31.0",
+]
+
+[tool.uv]
+dev-dependencies = []
