@@ -19,7 +19,7 @@ class CompositeGenerationStep(PipelineStep):
     step_name = StepName.COMPOSITE_GENERATION
 
     def execute(self) -> bool:
-        pokemon = self.state.pokemon_name
+        subject = self.state.subject_name
 
         # Load asset manifest for clip-to-asset mapping
         manifest = self.read_file("03_assets.md")
@@ -53,9 +53,11 @@ class CompositeGenerationStep(PipelineStep):
 
             output_path = composites_dir / f"clip_{clip_num:02d}_composite.png"
 
-            # Find character file (try with and without _core suffix)
-            char_path = self._find_asset(chars_dir, char_file) if char_file else None
-            env_path = self._find_asset(envs_dir, env_file) if env_file else None
+            # Find character file (search both dirs as fallback)
+            char_path = (self._find_asset(chars_dir, char_file) or
+                         self._find_asset(envs_dir, char_file)) if char_file else None
+            env_path = (self._find_asset(envs_dir, env_file) or
+                        self._find_asset(chars_dir, env_file)) if env_file else None
 
             if char_path and env_path:
                 self.log(f"[{i}/{len(clip_mappings)}] Creating composite for clip {clip_num:02d}...")
@@ -126,20 +128,44 @@ class CompositeGenerationStep(PipelineStep):
     @staticmethod
     def _parse_clip_mapping(manifest: str) -> list[dict]:
         """Parse the clip-to-asset mapping table from the manifest."""
+        # Build description -> filename mapping from Part 4 of the manifest
+        name_to_filename: dict[str, str] = {}
+        sections = re.split(r'\n(?=#{2,4}\s)', manifest)
+        for section in sections:
+            filename_match = re.search(
+                r'\*\*Suggested filename:\*\*\s*`?([a-zA-Z0-9_\-]+\.png)`?',
+                section
+            )
+            if not filename_match:
+                continue
+            filename = filename_match.group(1)
+            # Extract the asset name from the section header
+            header = section.split("\n")[0].strip()
+            header_clean = re.sub(r'^[#\d.\s]+', '', header).strip()
+            # Remove [CORE] for matching purposes
+            header_key = re.sub(r'\s*\[CORE\]\s*', '', header_clean).strip().lower()
+            name_to_filename[header_key] = filename
+
         mappings = []
 
         # Look for the mapping table
         lines = manifest.split("\n")
         in_table = False
         header_found = False
+        asset_col = 1  # Default: assets in second column
 
         for line in lines:
             stripped = line.strip()
 
-            # Detect table start
+            # Detect table start and determine which column has assets
             if re.match(r'\|\s*Clip\s*#?\s*\|', stripped, re.IGNORECASE):
                 in_table = True
                 header_found = False
+                header_cells = [c.strip().lower() for c in stripped.split("|")[1:-1]]
+                asset_col = next(
+                    (i for i, c in enumerate(header_cells) if 'asset' in c),
+                    1  # fallback to second column
+                )
                 continue
 
             if in_table and stripped.startswith("|") and "---" in stripped:
@@ -153,23 +179,43 @@ class CompositeGenerationStep(PipelineStep):
                     clip_match = re.search(r'(\d+)', cells[0])
                     if clip_match:
                         clip_num = int(clip_match.group(1))
-                        asset_text = " ".join(cells[1:])
+                        asset_text = cells[min(asset_col, len(cells) - 1)]
 
-                        # Extract character and environment references
                         char_file = ""
                         env_file = ""
 
-                        # Look for filenames
+                        # First try to find .png filenames directly in the text
                         filenames = re.findall(r'([a-zA-Z0-9_\-]+\.png)', asset_text)
                         for fn in filenames:
                             if any(kw in fn.lower() for kw in ["env_", "forest", "cave", "station"]):
                                 env_file = fn
                             else:
-                                char_file = fn
+                                char_file = char_file or fn
 
-                        # If no explicit filenames, try to extract from descriptions
+                        # If no filenames, match descriptions to known asset names
                         if not char_file and not env_file:
-                            char_file = f"clip_{clip_num:02d}_asset.png"
+                            # Split by + to handle multiple assets per clip
+                            asset_parts = re.split(r'\s*\+\s*', asset_text)
+                            for part in asset_parts:
+                                part_clean = re.sub(r'\s*\[CORE\]\s*', '', part).strip().lower()
+                                # Skip annotation-only parts
+                                if re.search(r'\bimplied\b|\bin motion\b', part_clean):
+                                    continue
+
+                                matched = name_to_filename.get(part_clean)
+                                # Fuzzy: check if any known name contains or is contained by part
+                                if not matched:
+                                    for key, fname in name_to_filename.items():
+                                        if part_clean in key or key in part_clean:
+                                            matched = fname
+                                            break
+
+                                if matched:
+                                    is_env = any(kw in matched for kw in ["env_", "forest", "cave", "station"])
+                                    if is_env:
+                                        env_file = env_file or matched
+                                    else:
+                                        char_file = char_file or matched
 
                         mappings.append({
                             "clip": clip_num,

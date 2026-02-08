@@ -2,7 +2,7 @@
 Step 12: Final Assembly
 Combines all video clips, narration, and sound effects into the final documentary.
 Input: videos/clip_XX.mp4, audio/clip_XX.mp3, audio/clip_XX_sfx.mp3
-Output: final/{pokemon}_documentary.mp4
+Output: final/{subject}_documentary.mp4
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ class FinalAssemblyStep(PipelineStep):
     step_name = StepName.FINAL_ASSEMBLY
 
     def execute(self) -> bool:
-        pokemon = self.state.pokemon_name
+        subject = self.state.subject_name
 
         # Initialize FFmpeg service
         try:
@@ -98,7 +98,7 @@ class FinalAssemblyStep(PipelineStep):
 
         # Stage 2: Concatenate all mixed clips
         self.log("Stage 2: Concatenating all clips...")
-        final_output = final_dir / f"{pokemon}_documentary.mp4"
+        final_output = final_dir / f"{subject}_documentary.mp4"
 
         ok = ffmpeg.concatenate_clips(
             [str(c) for c in sorted(mixed_clips)],
@@ -113,11 +113,11 @@ class FinalAssemblyStep(PipelineStep):
         duration = ffmpeg.get_duration(str(final_output))
         file_size = final_output.stat().st_size / (1024 * 1024)  # MB
 
-        self.step_state.artifacts.append(f"final/{pokemon}_documentary.mp4")
+        self.step_state.artifacts.append(f"final/{subject}_documentary.mp4")
 
         self.step_state.output = (
             f"Documentary Assembly Complete!\n\n"
-            f"File: final/{pokemon}_documentary.mp4\n"
+            f"File: final/{subject}_documentary.mp4\n"
             f"Duration: {duration:.1f}s ({duration/60:.1f} minutes)\n"
             f"Size: {file_size:.1f} MB\n\n"
             f"Clips mixed: {success_count}/{len(clip_numbers)}\n"

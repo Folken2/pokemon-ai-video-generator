@@ -19,7 +19,7 @@ class AudioGenerationStep(PipelineStep):
     step_name = StepName.AUDIO_GENERATION
 
     def execute(self) -> bool:
-        pokemon = self.state.pokemon_name
+        subject = self.state.subject_name
 
         # Load audio prompts
         audio_md = self.read_file("05_audio_generation.md")

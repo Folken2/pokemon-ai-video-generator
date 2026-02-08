@@ -14,7 +14,7 @@ class AssetPlanningStep(PipelineStep):
     requires_llm = True
 
     def execute(self) -> bool:
-        pokemon = self.state.pokemon_name
+        subject = self.state.subject_name
 
         # Load prerequisites
         research = self.read_file("01_research.md")
@@ -45,7 +45,7 @@ Production Script (SOP 02):
 
 ---
 
-Create the complete Asset Manifest for {pokemon} including:
+Create the complete Asset Manifest for {subject} including:
 1. Part 1: The Manifest (cast + props list)
 2. Part 2: Clip-to-Asset Mapping Table
 3. Part 3: The Global Atmosphere Block

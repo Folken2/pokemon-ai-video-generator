@@ -1,0 +1,151 @@
+theme: ancient_creatures
+subjects:
+  - name: tyrannosaurus_rex
+    display_name: Tyrannosaurus Rex
+    tags: [theropod, predator, cretaceous]
+    cinematic_rating: 5
+    description: "Apex predator of the Late Cretaceous. 40-foot carnivore, bone-crushing bite force of 12,800 pounds."
+
+  - name: velociraptor
+    display_name: Velociraptor
+    tags: [theropod, pack hunter, feathered]
+    cinematic_rating: 5
+    description: "Feathered pack hunter. Turkey-sized, sickle claw, coordinated ambush tactics, Mongolian desert."
+
+  - name: triceratops
+    display_name: Triceratops
+    tags: [ceratopsian, herbivore, defensive]
+    cinematic_rating: 5
+    description: "Three-horned face. Shield frill display, herd grazer, T. rex's primary rival."
+
+  - name: megalodon
+    display_name: Megalodon
+    tags: [shark, oceanic, massive]
+    cinematic_rating: 5
+    description: "60-foot prehistoric shark. Whale-hunting apex, serrated 7-inch teeth, warm ocean ruler."
+
+  - name: woolly_mammoth
+    display_name: Woolly Mammoth
+    tags: [mammal, ice age, herd]
+    cinematic_rating: 5
+    description: "Ice Age giant. Curved tusks, thick fur insulation, tundra herd migration, human coexistence."
+
+  - name: pteranodon
+    display_name: Pteranodon
+    tags: [pterosaur, flying, coastal]
+    cinematic_rating: 4
+    description: "Crested pterosaur. 23-foot wingspan, fish snatcher, coastal cliff colonies, toothless beak."
+
+  - name: stegosaurus
+    display_name: Stegosaurus
+    tags: [thyreophoran, herbivore, plated]
+    cinematic_rating: 4
+    description: "Plated dinosaur. Dorsal plate thermoregulation, thagomizer tail weapon, Jurassic lowland grazer."
+
+  - name: spinosaurus
+    display_name: Spinosaurus
+    tags: [theropod, aquatic, sail-backed]
+    cinematic_rating: 5
+    description: "Largest carnivorous dinosaur. Semi-aquatic fisher, 6-foot dorsal sail, Cretaceous river hunter."
+
+  - name: saber_toothed_tiger
+    display_name: Saber-Toothed Tiger
+    tags: [mammal, predator, ice age]
+    cinematic_rating: 5
+    description: "Smilodon. 11-inch canines, ambush predator, megafauna specialist, La Brea tar pit victim."
+
+  - name: anklyosaurus
+    display_name: Ankylosaurus
+    tags: [thyreophoran, armored, herbivore]
+    cinematic_rating: 4
+    description: "Living tank. Fused bone armor, club tail, low-slung Cretaceous herbivore, predator-proof."
+
+  - name: brachiosaurus
+    display_name: Brachiosaurus
+    tags: [sauropod, giant, herbivore]
+    cinematic_rating: 5
+    description: "Towering sauropod. 85-foot canopy browser, giraffe-like stance, Jurassic forest ecosystem engineer."
+
+  - name: mosasaurus
+    display_name: Mosasaurus
+    tags: [marine reptile, predator, cretaceous]
+    cinematic_rating: 5
+    description: "Sea tyrant. 50-foot marine lizard, double-hinged jaw, Cretaceous ocean apex predator."
+
+  - name: dire_wolf
+    display_name: Dire Wolf
+    tags: [mammal, pack, ice age]
+    cinematic_rating: 4
+    description: "Pleistocene pack hunter. Heavier than gray wolves, bone-crushing jaws, megafauna pursuit specialist."
+
+  - name: quetzalcoatlus
+    display_name: Quetzalcoatlus
+    tags: [pterosaur, massive, flying]
+    cinematic_rating: 5
+    description: "Largest flying animal ever. 36-foot wingspan, giraffe-height standing, stork-like ground hunter."
+
+  - name: dunkleosteus
+    display_name: Dunkleosteus
+    tags: [placoderm, armored, devonian]
+    cinematic_rating: 5
+    description: "Armored fish titan. 33-foot Devonian apex, self-sharpening bone plates instead of teeth."
+
+  - name: archaeopteryx
+    display_name: Archaeopteryx
+    tags: [transitional, feathered, jurassic]
+    cinematic_rating: 4
+    description: "First bird. Dinosaur-to-bird transition fossil, clawed wings, toothed beak, island glider."
+
+  - name: giant_ground_sloth
+    display_name: Giant Ground Sloth
+    tags: [mammal, herbivore, massive]
+    cinematic_rating: 4
+    description: "Megatherium. 20-foot standing height, massive claws, South American forest browser."
+
+  - name: dodo
+    display_name: Dodo
+    tags: [bird, flightless, extinct]
+    cinematic_rating: 4
+    description: "Flightless Mauritius pigeon. Fearless of humans, 50-pound ground nester, extinction icon."
+
+  - name: terror_bird
+    display_name: Terror Bird
+    tags: [bird, predator, flightless]
+    cinematic_rating: 5
+    description: "Phorusrhacid. 10-foot flightless raptor, axe-like beak, South American plains pursuit predator."
+
+  - name: ichthyosaurus
+    display_name: Ichthyosaurus
+    tags: [marine reptile, dolphin-like, jurassic]
+    cinematic_rating: 4
+    description: "Fish lizard. Dolphin-shaped marine reptile, enormous eyes for deep diving, live birth."
+
+  - name: parasaurolophus
+    display_name: Parasaurolophus
+    tags: [hadrosaur, herbivore, vocal]
+    cinematic_rating: 4
+    description: "Crested duck-bill. Hollow crest trumpet calls, Cretaceous herd communication, bipedal sprinter."
+
+  - name: plesiosaur
+    display_name: Plesiosaur
+    tags: [marine reptile, long-necked, jurassic]
+    cinematic_rating: 4
+    description: "Long-necked marine reptile. Four-flipper locomotion, fish snatcher, Loch Ness legend inspiration."
+
+  - name: giant_irish_elk
+    display_name: Giant Irish Elk
+    tags: [mammal, antlered, ice age]
+    cinematic_rating: 4
+    description: "Megaloceros. 12-foot antler span, bog preservation, Pleistocene display rival, Irish peatlands."
+
+  - name: titanoboa
+    display_name: Titanoboa
+    tags: [reptile, massive, tropical]
+    cinematic_rating: 5
+    description: "48-foot constrictor. Post-dinosaur apex, swamp ambush hunter, 2,500 pound squeeze force."
+
+  - name: glyptodon
+    display_name: Glyptodon
+    tags: [mammal, armored, ice age]
+    cinematic_rating: 3
+    description: "Armadillo ancestor. VW Beetle-sized shell, South American grassland tank, human-era survival."

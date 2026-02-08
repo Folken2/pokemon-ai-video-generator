@@ -18,7 +18,7 @@ class SFXGenerationStep(PipelineStep):
     step_name = StepName.SFX_GENERATION
 
     def execute(self) -> bool:
-        pokemon = self.state.pokemon_name
+        subject = self.state.subject_name
 
         # Load SFX prompts
         sfx_md = self.read_file("06_sound_effects_prompts.md")

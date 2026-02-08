@@ -15,11 +15,12 @@ Transform Pokémon into photorealistic wildlife documentaries in the style of Da
 - Python 3.10+
 - [uv](https://astral.sh/uv) (Python package manager)
 - [FFmpeg](https://ffmpeg.org) (video processing)
-- [Claude Code](https://claude.ai/claude-code) (AI assistant)
 - API Keys:
+  - [OpenRouter](https://openrouter.ai) for LLM (story, prompts)
   - [Gemini API](https://aistudio.google.com/app/apikey) for image generation
   - [KIE.ai API](https://kie.ai) for video generation (Kling 2.5 wrapper)
   - [ElevenLabs API](https://elevenlabs.io) for narration
+  - (Optional) [Telegram Bot Token](https://core.telegram.org/bots#botfather) for mobile approvals
 
 ### Setup
 
@@ -40,11 +41,37 @@ uv sync
 # 4. Configure API keys
 cp scripts/.env.example scripts/.env
 # Edit scripts/.env and add:
+#   OPENROUTER_API_KEY=your_openrouter_key
 #   GEMINI_API_KEY=your_gemini_key
 #   KIE_API_KEY=your_kie_key
 #   ELEVENLABS_API_KEY=your_elevenlabs_key
 #   ELEVENLABS_VOICE_ID=your_voice_id
+
+# 5. (Optional) Install Telegram bot support
+uv sync --extra telegram
+# Then add to scripts/.env:
+#   TELEGRAM_ENABLED=true
+#   TELEGRAM_BOT_TOKEN=your_bot_token   (get from @BotFather)
+#   TELEGRAM_CHAT_ID=your_chat_id       (get from @userinfobot)
+
+# 6. (Optional) Enable API key auth for cloud deployment
+# Add to scripts/.env:
+#   API_KEY=your_secret_key_here
+# When set, all /api/ and /files/ routes require X-API-Key header.
+# The frontend gets the key auto-injected — no separate config needed.
 ```
+
+### Run
+
+```bash
+# Run backend server (dev mode with hot reload)
+uv run uvicorn backend.app:app --reload --host 0.0.0.0 --port 8000
+
+# Or run via entry point
+uv run pipeline-server
+```
+
+Then open the web UI (served by the backend) for project management and step-by-step approval. The pipeline orchestrates all 12 steps with human-in-the-loop gates.
 
 ## The 8-Step Production Pipeline
 
@@ -315,51 +342,53 @@ python scripts/assemble_video.py \
 
 ## Example: Complete Haunter Workflow
 
+Reference examples live in `docs/examples/` (haunter, bulbasaur, charizard, pikachu).
+
 ```bash
-# Already completed as examples:
-# 1. Research → haunter/01_research.md ✅
-# 2. Story → haunter/02_story_script.md ✅
-# 3. Asset Planning → haunter/03_assets.md ✅
+# Already completed as examples (in docs/examples/):
+# 1. Research → docs/examples/haunter/01_research.md ✅
+# 2. Story → docs/examples/haunter/02_story_script.md ✅
+# 3. Asset Planning → docs/examples/haunter/03_assets.md ✅
 
 # SOP 03: Generate all assets (automated):
 # Open prompts/3.5_generate_assets_agent.md in Claude Code
-# Tell Claude: "Generate assets for haunter"
+# Tell Claude: "Generate assets for docs/examples/haunter"
 # Wait ~5-10 minutes for character/environment images
-# Output: haunter/assets/characters/ and haunter/assets/environments/
+# Output: docs/examples/haunter/assets/characters/ and docs/examples/haunter/assets/environments/
 
 # SOP 03.5: Generate composite images (automated):
 # Combine character + environment into YouTube-ready 16:9 composites
 # Claude automatically creates composites at 1920x1080
 # Wait ~1-2 minutes
-# Output: haunter/assets/composites/
+# Output: docs/examples/haunter/assets/composites/
 
 # SOP 04: Create video prompts (already completed):
-# → haunter/04_video_prompts.md ✅
+# → docs/examples/haunter/04_video_prompts.md ✅
 # (Uses Priority Hierarchy: Core Action → Details → Sequence → Environment → Camera LAST)
 
 # SOP 05: Generate all videos (automated):
 # Open prompts/4.5_generate_videos_agent.md in Claude Code
-# Tell Claude: "Generate videos for haunter"
+# Tell Claude: "Generate videos for docs/examples/haunter"
 # Wait ~1-2 hours for 16 video clips
-# Output: haunter/videos/
+# Output: docs/examples/haunter/videos/
 
 # SOP 06: Generate all audio (automated):
 # Open prompts/5.5_generate_audio_agent.md in Claude Code
-# Tell Claude: "Generate audio for haunter"
+# Tell Claude: "Generate audio for docs/examples/haunter"
 # Wait ~1-2 minutes for 16 audio clips
-# Output: haunter/audio/
+# Output: docs/examples/haunter/audio/
 
 # SOP 07: Generate sound effects (automated):
 # Open prompts/6.5_generate_sound_effects_agent.md in Claude Code
-# Tell Claude: "Generate sound effects for haunter"
+# Tell Claude: "Generate sound effects for docs/examples/haunter"
 # Wait ~2-3 minutes for 16 SFX clips
-# Output: haunter/sfx/
+# Output: docs/examples/haunter/sfx/
 
 # SOP 08: Assemble final video (automated):
 # Open prompts/7_assemble_final_agent.md in Claude Code
-# Tell Claude: "Assemble final video for haunter"
+# Tell Claude: "Assemble final video for docs/examples/haunter"
 # Wait ~2-3 minutes for video assembly
-# Output: haunter/haunter_final.mp4
+# Output: docs/examples/haunter/haunter_final.mp4
 
 # Done! Your 90-second Pokémon documentary is ready! 🎉
 ```
@@ -369,7 +398,18 @@ python scripts/assemble_video.py \
 ```
 pokemon-natural-geo/
 ├── README.md                               ← You are here
-├── prompts/                                ← Agent instructions for each SOP
+├── backend/                                ← FastAPI server (orchestrates pipeline)
+│   └── services/
+│       ├── subject_catalog.py             ← Curated subject search (YAML + lru_cache)
+│       └── telegram_service.py            ← Optional Telegram bot for mobile approvals
+├── data/
+│   └── subjects/                          ← Character catalogs (YAML)
+│       ├── pokemon.yaml                   ← ~51 Gen 1 Pokemon
+│       ├── harry_potter.yaml              ← ~20 magical creatures
+│       ├── ancient_creatures.yaml         ← ~25 prehistoric creatures
+│       └── deep_sea.yaml                  ← ~25 marine creatures
+├── frontend/                               ← Web UI (static, served by backend)
+├── prompts/                                ← SOP instructions for each pipeline step
 │   ├── 1_research.md                      ← SOP 01: Species research
 │   ├── 2_story_generator.md               ← SOP 02: Story development
 │   ├── 3_character_generation.md          ← SOP 03: Asset planning guide
@@ -390,22 +430,22 @@ pokemon-natural-geo/
 │   ├── assemble_video.py                  ← Video assembly CLI (FFmpeg)
 │   ├── README.md                          ← Technical documentation
 │   └── .env                               ← Your API keys (create this)
-├── haunter/                                ← Example Pokemon (Haunter episode)
-│   ├── 01_research.md                     ← Species biological profile
-│   ├── 02_story_script.md                 ← Story narrative
-│   ├── 03_assets.md                       ← Asset manifest
-│   ├── 04_video_prompts.md                ← Kling 2.5 motion prompts
-│   ├── 05_audio_generation.md             ← Narration scripts
-│   ├── 06_sound_effects.md                ← SFX descriptions
-│   ├── assembly_manifest.json             ← Clip manifest (SOP 08)
-│   ├── assets/                            ← Generated images (SOP 03)
-│   │   ├── characters/                    ← Character PNGs (transparent)
-│   │   ├── environments/                  ← Environment backgrounds
-│   │   └── composites/                    ← YouTube-ready 16:9 composites (SOP 03.5)
-│   ├── videos/                            ← Generated videos (SOP 05)
-│   ├── audio/                             ← Generated narration (SOP 06)
-│   ├── sfx/                               ← Generated sound effects (SOP 07)
-│   └── haunter_final.mp4                  ← Final documentary (SOP 08)
+├── docs/
+│   └── examples/                          ← Example Pokemon documentaries
+│       ├── haunter/                       ← Haunter episode (complete)
+│       │   ├── 01_research.md             ← Species biological profile
+│       │   ├── 02_story_script.md         ← Story narrative
+│       │   ├── 03_assets.md               ← Asset manifest
+│       │   ├── 04_video_prompts.md        ← Kling 2.5 motion prompts
+│       │   ├── 05_audio_generation.md     ← Narration scripts
+│       │   ├── 06_sound_effects.md        ← SFX descriptions
+│       │   ├── assets/                    ← Generated images (SOP 03)
+│       │   ├── videos/                    ← Generated videos (SOP 05)
+│       │   ├── audio/                     ← Generated narration (SOP 06)
+│       │   └── sfx/                       ← Generated sound effects (SOP 07)
+│       ├── bulbasaur/                     ← Bulbasaur episode
+│       ├── charizard/                     ← Charizard episode
+│       └── pikachu/                       ← Pikachu episode (in progress)
 └── pyproject.toml                          ← Python dependencies (uv)
 ```
 
@@ -434,19 +474,20 @@ pokemon-natural-geo/
 | Audio Generation | ElevenLabs v3 | David Attenborough-style narration | ✅ Working |
 | Video Assembly | FFmpeg | Trim, sync, and concatenate clips | ✅ Working |
 | Image Hosting | catbox.moe | Free public URLs for KIE.ai | ✅ Working |
-| Orchestration | Claude Code | AI agent automation | ✅ Working |
+| Orchestration | FastAPI backend + Web UI | 12-step pipeline with human approval gates | ✅ Working |
+| Subject Catalogs | YAML + PyYAML | Curated subject lists per theme with search | ✅ Working |
+| Mobile Approvals | Telegram Bot (optional) | Approve/reject steps from phone | ✅ Working |
 | Environment | uv + Python 3.10+ | Dependency management | ✅ Working |
 
-## Architecture: Smart Agent + Dumb Scripts
+## Architecture: Smart Orchestrator + Dumb Scripts
 
 All automation follows the same pattern:
 
-**Agent (Smart):**
-- Reads project files
-- Extracts data
-- Combines prompts
-- Orchestrates workflow
-- Handles errors
+**Backend (Smart):**
+- Reads project files and prompts
+- Extracts data, calls LLMs via OpenRouter
+- Orchestrates the 12-step pipeline
+- Manages state, handles approval gates
 
 **Python Scripts (Dumb):**
 - Take complete inputs
@@ -457,14 +498,51 @@ All automation follows the same pattern:
 
 **Example:**
 ```
-Agent reads assets.md → Extracts prompt → Combines atmosphere
+Backend reads assets.md → Extracts prompt → Combines atmosphere
    ↓
-Agent calls: python generate_asset.py --prompt "COMPLETE_PROMPT" --output "path.png"
+Backend calls: python scripts/generate_asset.py --prompt "COMPLETE_PROMPT" --output "path.png"
    ↓
 Script calls Gemini API → Downloads image → Exits
 ```
 
 This keeps scripts simple, testable, and reusable.
+
+## Telegram Bot (Optional)
+
+Approve/reject pipeline steps from your phone. The web UI continues to work independently — the Telegram bot is a parallel approval channel.
+
+### Setup
+
+1. **Create a bot:** Message [@BotFather](https://t.me/BotFather) on Telegram, send `/newbot`, follow prompts. Copy the bot token.
+2. **Get your chat ID:** Message [@userinfobot](https://t.me/userinfobot) on Telegram. Copy the `Id` value.
+3. **Install the optional dependency:**
+   ```bash
+   uv sync --extra telegram
+   ```
+4. **Add to `scripts/.env`:**
+   ```
+   TELEGRAM_ENABLED=true
+   TELEGRAM_BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
+   TELEGRAM_CHAT_ID=987654321
+   ```
+5. **Start the server** — the bot starts automatically alongside FastAPI.
+
+### Bot Commands
+
+| Command | Description |
+|---------|-------------|
+| `/projects` | List all projects with progress |
+| `/status` | Show current pipeline status for all projects |
+| `/new <subject> [theme]` | Create a new project (e.g., `/new pikachu pokemon`) |
+
+### How It Works
+
+- When a step finishes, you get a Telegram notification with **Approve** and **Retry** inline buttons
+- For story selection, you get 5 buttons (one per story option)
+- Tapping a button updates the pipeline state — changes are immediately visible in the web UI too
+- Asset generation steps include image previews sent as media groups
+
+---
 
 ## FAQ
 
@@ -528,4 +606,4 @@ This is a personal project but feel free to:
 
 ---
 
-**Ready to start?** Follow the 6-step pipeline beginning with `prompts/1_research.md` 🚀
+**Ready to start?** Run `uv run pipeline-server` and open the web UI 🚀

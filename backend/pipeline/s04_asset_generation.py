@@ -21,7 +21,7 @@ class AssetGenerationStep(PipelineStep):
     step_name = StepName.ASSET_GENERATION
 
     def execute(self) -> bool:
-        pokemon = self.state.pokemon_name
+        subject = self.state.subject_name
 
         # Load asset manifest
         manifest = self.read_file("03_assets.md")
@@ -175,6 +175,46 @@ class AssetGenerationStep(PipelineStep):
         )
         return True
 
+    def regenerate_asset(self, filename: str, feedback: str) -> bool:
+        """Regenerate a single asset with user feedback."""
+        manifest = self.read_file("03_assets.md")
+        if not manifest:
+            self.log("Missing 03_assets.md for regeneration", level="error")
+            return False
+
+        # Find the original prompt for this filename
+        assets = self._parse_asset_prompts(manifest)
+        target = None
+        for asset in assets:
+            if asset["filename"] == filename:
+                target = asset
+                break
+
+        if not target:
+            self.log(f"Asset '{filename}' not found in manifest", level="error")
+            return False
+
+        global_atmosphere = self._extract_global_atmosphere(manifest)
+        full_prompt = f"{global_atmosphere}\n\n{target['prompt']}\n\nUser feedback: {feedback}"
+
+        output_path = self.project_dir / "assets" / target["category"] / filename
+        self.log(f"Regenerating {filename} with feedback: {feedback[:80]}...")
+
+        try:
+            gemini = GeminiService()
+        except ValueError as e:
+            self.log(str(e), level="error")
+            return False
+
+        ok = gemini.generate_image(full_prompt, output_path)
+        if ok:
+            self.log(f"Successfully regenerated {filename}")
+        else:
+            self.log(f"Failed to regenerate {filename}", level="warning")
+
+        self.state.save(self.project_dir)
+        return ok
+
     @staticmethod
     def _extract_global_atmosphere(manifest: str) -> str:
         """Extract the Global Atmosphere Block from the manifest."""
@@ -202,6 +242,21 @@ class AssetGenerationStep(PipelineStep):
         # Pattern: ### Header (possibly with [CORE])\n\n```\nprompt\n```\n**Suggested filename:** name.png
         sections = re.split(r'\n(?=#{2,4}\s)', manifest)
 
+        # First pass: collect core filenames indexed by species name
+        core_by_species: dict[str, str] = {}
+        for section in sections:
+            if "[CORE]" not in section.split("```")[0]:
+                continue
+            filename_match = re.search(
+                r'\*\*Suggested filename:\*\*\s*`?([a-zA-Z0-9_\-]+\.png)`?',
+                section
+            )
+            if filename_match:
+                filename = filename_match.group(1)
+                species = filename.split("_")[0]
+                core_by_species[species] = filename
+
+        # Second pass: build full asset list with correct core references
         for section in sections:
             # Check if this section has a code block
             code_match = re.search(r'```\n?([\s\S]*?)```', section)
@@ -234,15 +289,11 @@ class AssetGenerationStep(PipelineStep):
             else:
                 category = "characters"
 
-            # Try to find core reference for variations
+            # Find core reference for variations by matching species prefix
             core_ref = ""
             if not is_core and category == "characters":
-                # Extract species name from filename to find matching core
-                parts = filename.replace(".png", "").split("_")
-                if len(parts) >= 2:
-                    # Look for a core file with matching species prefix
-                    species_prefix = "_".join(parts[:2])  # e.g., "pikachu_juvenile"
-                    core_ref = f"{species_prefix}_core.png"
+                species = filename.split("_")[0]
+                core_ref = core_by_species.get(species, "")
 
             assets.append({
                 "filename": filename,

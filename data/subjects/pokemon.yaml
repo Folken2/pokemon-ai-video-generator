@@ -1,0 +1,307 @@
+theme: pokemon
+subjects:
+  - name: pikachu
+    display_name: Pikachu
+    tags: [electric, starter, iconic]
+    cinematic_rating: 5
+    description: "Electric Mouse. Bioelectric cheek pouches, storm feeding, lightning-fast reflexes."
+
+  - name: charizard
+    display_name: Charizard
+    tags: [fire, flying, evolution]
+    cinematic_rating: 5
+    description: "Flame Pokemon. Volcanic ridge dweller, aerial predator, tail flame indicator of life force."
+
+  - name: bulbasaur
+    display_name: Bulbasaur
+    tags: [grass, poison, starter]
+    cinematic_rating: 5
+    description: "Seed Pokemon. Symbiotic plant bulb, photosynthesis, poison powder defense."
+
+  - name: haunter
+    display_name: Haunter
+    tags: [ghost, poison, nocturnal]
+    cinematic_rating: 5
+    description: "Gas Pokemon. Phasing through walls, licking paralysis, gaseous body manipulation."
+
+  - name: squirtle
+    display_name: Squirtle
+    tags: [water, starter, defensive]
+    cinematic_rating: 4
+    description: "Tiny Turtle. Retractable shell defense, water jet propulsion, freshwater habitats."
+
+  - name: charmander
+    display_name: Charmander
+    tags: [fire, starter, vulnerable]
+    cinematic_rating: 4
+    description: "Lizard Pokemon. Tail flame as vital sign, rocky mountain dweller, rain vulnerability."
+
+  - name: eevee
+    display_name: Eevee
+    tags: [normal, evolution, adaptable]
+    cinematic_rating: 5
+    description: "Evolution Pokemon. Unstable genetic code, multiple evolutionary paths, urban adaptability."
+
+  - name: gengar
+    display_name: Gengar
+    tags: [ghost, poison, predator]
+    cinematic_rating: 5
+    description: "Shadow Pokemon. Temperature drops, shadow mimicry, dream feeding, urban nocturnal hunter."
+
+  - name: mewtwo
+    display_name: Mewtwo
+    tags: [psychic, legendary, artificial]
+    cinematic_rating: 5
+    description: "Genetic Pokemon. Lab-created apex predator, psychic devastation, solitary cave dweller."
+
+  - name: dragonite
+    display_name: Dragonite
+    tags: [dragon, flying, oceanic]
+    cinematic_rating: 5
+    description: "Dragon Pokemon. Transoceanic flight, storm navigation, lighthouse guardian behavior."
+
+  - name: gyarados
+    display_name: Gyarados
+    tags: [water, flying, destructive]
+    cinematic_rating: 5
+    description: "Atrocious Pokemon. Magikarp evolution, rage-driven destruction, deep water territorial."
+
+  - name: arcanine
+    display_name: Arcanine
+    tags: [fire, majestic, loyal]
+    cinematic_rating: 4
+    description: "Legendary Pokemon. 6,200 mile/day runner, grassland pack hunter, mane flame display."
+
+  - name: snorlax
+    display_name: Snorlax
+    tags: [normal, massive, sleeping]
+    cinematic_rating: 4
+    description: "Sleeping Pokemon. 900-pound hibernator, path blocker, 880 pounds of food per day."
+
+  - name: lapras
+    display_name: Lapras
+    tags: [water, ice, endangered]
+    cinematic_rating: 5
+    description: "Transport Pokemon. Gentle ocean traveler, song communication, near-extinction survivor."
+
+  - name: vaporeon
+    display_name: Vaporeon
+    tags: [water, evolution, camouflage]
+    cinematic_rating: 4
+    description: "Bubble Jet Pokemon. Molecular water dissolution, lake shore ambush hunter."
+
+  - name: jolteon
+    display_name: Jolteon
+    tags: [electric, evolution, speed]
+    cinematic_rating: 4
+    description: "Lightning Pokemon. Bristling fur static charge, 10,000-volt discharge, grassland sprinter."
+
+  - name: flareon
+    display_name: Flareon
+    tags: [fire, evolution, heat]
+    cinematic_rating: 3
+    description: "Flame Pokemon. 1,650F internal sac, fur heat storage, volcanic vent dweller."
+
+  - name: alakazam
+    display_name: Alakazam
+    tags: [psychic, intelligence, evolution]
+    cinematic_rating: 4
+    description: "Psi Pokemon. 5,000 IQ, spoon telekinesis, memory of everything since birth."
+
+  - name: machamp
+    display_name: Machamp
+    tags: [fighting, strength, four-armed]
+    cinematic_rating: 4
+    description: "Superpower Pokemon. Four-armed martial artist, 1,000 punches in 2 seconds, mountain training."
+
+  - name: ninetales
+    display_name: Ninetales
+    tags: [fire, mystical, longevity]
+    cinematic_rating: 5
+    description: "Fox Pokemon. 1,000-year lifespan, curse-laying tails, sacred grove guardian."
+
+  - name: rapidash
+    display_name: Rapidash
+    tags: [fire, speed, equine]
+    cinematic_rating: 4
+    description: "Fire Horse. 150 mph gallop, blazing mane, grassland herd dynamics."
+
+  - name: venusaur
+    display_name: Venusaur
+    tags: [grass, poison, evolution]
+    cinematic_rating: 4
+    description: "Seed Pokemon. Full bloom after evolution, solar beam absorption, rainforest canopy dweller."
+
+  - name: blastoise
+    display_name: Blastoise
+    tags: [water, cannon, defensive]
+    cinematic_rating: 4
+    description: "Shellfish Pokemon. Twin hydro cannons, island shore territorial, shell crush defense."
+
+  - name: butterfree
+    display_name: Butterfree
+    tags: [bug, flying, migration]
+    cinematic_rating: 4
+    description: "Butterfly Pokemon. Toxic scale dust, ocean migration, compound eye rain prediction."
+
+  - name: pidgeot
+    display_name: Pidgeot
+    tags: [normal, flying, raptor]
+    cinematic_rating: 3
+    description: "Bird Pokemon. Mach 2 dive speeds, forest canopy apex predator, beautiful plumage."
+
+  - name: onix
+    display_name: Onix
+    tags: [rock, ground, tunneling]
+    cinematic_rating: 4
+    description: "Rock Snake. 28-foot burrower, magnetic compass brain, cave ecosystem engineer."
+
+  - name: scyther
+    display_name: Scyther
+    tags: [bug, flying, predator]
+    cinematic_rating: 4
+    description: "Mantis Pokemon. Razor-sharp scythes, tall grass ambush hunter, ninja-like speed."
+
+  - name: aerodactyl
+    display_name: Aerodactyl
+    tags: [rock, flying, prehistoric]
+    cinematic_rating: 5
+    description: "Fossil Pokemon. Resurrected apex predator, serrated fangs, prehistoric sky ruler."
+
+  - name: articuno
+    display_name: Articuno
+    tags: [ice, flying, legendary]
+    cinematic_rating: 5
+    description: "Freeze Pokemon. Blizzard wings, mountain peak dweller, doomed traveler's last sight."
+
+  - name: zapdos
+    display_name: Zapdos
+    tags: [electric, flying, legendary]
+    cinematic_rating: 5
+    description: "Electric Pokemon. Thundercloud nester, lightning bolt harvester, storm rider."
+
+  - name: moltres
+    display_name: Moltres
+    tags: [fire, flying, legendary]
+    cinematic_rating: 5
+    description: "Flame Pokemon. Living bonfire, spring migration herald, volcanic peak nester."
+
+  - name: ditto
+    display_name: Ditto
+    tags: [normal, transform, mimic]
+    cinematic_rating: 3
+    description: "Transform Pokemon. Cellular restructuring, imperfect copying, laboratory origins."
+
+  - name: mew
+    display_name: Mew
+    tags: [psychic, mythical, ancestor]
+    cinematic_rating: 5
+    description: "New Species Pokemon. DNA of all Pokemon, invisible to impure hearts, tropical jungle recluse."
+
+  - name: cubone
+    display_name: Cubone
+    tags: [ground, orphan, emotional]
+    cinematic_rating: 5
+    description: "Lonely Pokemon. Mother's skull helmet, moonlight crying, bone club weapon, desert wanderer."
+
+  - name: magikarp
+    display_name: Magikarp
+    tags: [water, weak, evolution]
+    cinematic_rating: 3
+    description: "Fish Pokemon. Pathetically weak splasher, ancient powerful ancestor, Gyarados metamorphosis."
+
+  - name: jigglypuff
+    display_name: Jigglypuff
+    tags: [normal, fairy, song]
+    cinematic_rating: 3
+    description: "Balloon Pokemon. Soporific singing, lung capacity, eye-drawing rage, meadow performer."
+
+  - name: vulpix
+    display_name: Vulpix
+    tags: [fire, fox, cute]
+    cinematic_rating: 4
+    description: "Fox Pokemon. Six curling tails, flame decoy splitting, mountain foothill forager."
+
+  - name: growlithe
+    display_name: Growlithe
+    tags: [fire, loyal, canine]
+    cinematic_rating: 4
+    description: "Puppy Pokemon. Fierce territorial guardian, exceptional scent memory, pack loyalty."
+
+  - name: abra
+    display_name: Abra
+    tags: [psychic, teleport, sleeping]
+    cinematic_rating: 3
+    description: "Psi Pokemon. 18 hours sleep, danger teleportation, psychic aura sleep detection."
+
+  - name: geodude
+    display_name: Geodude
+    tags: [rock, ground, mountain]
+    cinematic_rating: 2
+    description: "Rock Pokemon. Mountain path camouflage, explosive anger when stepped on, cliff hanger."
+
+  - name: slowpoke
+    display_name: Slowpoke
+    tags: [water, psychic, oblivious]
+    cinematic_rating: 3
+    description: "Dopey Pokemon. 5-second pain delay, tail fishing, riverbank meditation, Shellder symbiosis."
+
+  - name: gastly
+    display_name: Gastly
+    tags: [ghost, poison, gaseous]
+    cinematic_rating: 3
+    description: "Gas Pokemon. 80% poison gas body, wind vulnerability, graveyard territorial, suffocation attacks."
+
+  - name: kangaskhan
+    display_name: Kangaskhan
+    tags: [normal, maternal, protective]
+    cinematic_rating: 5
+    description: "Parent Pokemon. Fierce pouch baby protection, grassland matriarch, devastating charge attack."
+
+  - name: tauros
+    display_name: Tauros
+    tags: [normal, aggressive, herd]
+    cinematic_rating: 4
+    description: "Wild Bull. Three-tail whip charge, stampede behavior, prairie territorial disputes."
+
+  - name: electabuzz
+    display_name: Electabuzz
+    tags: [electric, power, urban]
+    cinematic_rating: 3
+    description: "Electric Pokemon. Power plant feeder, blackout causer, electrical storm attraction."
+
+  - name: magmar
+    display_name: Magmar
+    tags: [fire, volcanic, heat]
+    cinematic_rating: 3
+    description: "Spitfire Pokemon. Volcanic crater dweller, 2,200F body, heat shimmer camouflage."
+
+  - name: pinsir
+    display_name: Pinsir
+    tags: [bug, fighting, powerful]
+    cinematic_rating: 3
+    description: "Stag Beetle. Crushing pincers, tree-snapping grip, tropical forest floor hunter."
+
+  - name: sandshrew
+    display_name: Sandshrew
+    tags: [ground, desert, burrowing]
+    cinematic_rating: 3
+    description: "Mouse Pokemon. Desert sand swimmer, curl defense, moisture-absorbing skin, dry habitat."
+
+  - name: psyduck
+    display_name: Psyduck
+    tags: [water, psychic, headache]
+    cinematic_rating: 3
+    description: "Duck Pokemon. Chronic headache psychic bursts, waterside waddle, confused demeanor."
+
+  - name: ponyta
+    display_name: Ponyta
+    tags: [fire, equine, young]
+    cinematic_rating: 4
+    description: "Fire Horse. Newborn flame mane, trust-based riding, grassland gallop, weak-to-strong arc."
+
+  - name: dodrio
+    display_name: Dodrio
+    tags: [normal, flying, three-headed]
+    cinematic_rating: 3
+    description: "Triple Bird. Three-head coordination, 40 mph sprint, savanna prey watchfulness."

@@ -14,7 +14,7 @@ class SFXPromptsStep(PipelineStep):
     requires_llm = True
 
     def execute(self) -> bool:
-        pokemon = self.state.pokemon_name
+        subject = self.state.subject_name
 
         # Load the production script
         script = self.read_file("02_story_script.md")
@@ -34,7 +34,7 @@ class SFXPromptsStep(PipelineStep):
 
 ---
 
-Pokemon: {pokemon}
+Subject: {subject}
 
 Create the Sound Effects Prompt Table with a unique 30-50 word prompt for each clip.
 Each prompt must:

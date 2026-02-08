@@ -2,7 +2,7 @@
 Step 02: Story Development
 Phase 1: Generate 5 story options (awaits user selection)
 Phase 2: Generate full production script from selected option
-Input: 01_research.md + Pokemon name
+Input: 01_research.md + subject name
 Output: Story options (phase 1), then 02_story_script.md (phase 2)
 """
 
@@ -16,7 +16,7 @@ class StoryOptionsStep(PipelineStep):
     requires_llm = True
 
     def execute(self) -> bool:
-        pokemon = self.state.pokemon_name
+        subject = self.state.subject_name
 
         # Load research
         research = self.read_file("01_research.md")
@@ -37,11 +37,11 @@ class StoryOptionsStep(PipelineStep):
         if "## Saving Instructions" in phase1_prompt:
             phase1_prompt = phase1_prompt[:phase1_prompt.index("## Saving Instructions")].strip()
 
-        user_message = f"""Species Profile for {pokemon}:
+        user_message = f"""Species Profile for {subject}:
 
 {research}
 
-Generate 5 story options for a 90-second nature documentary about {pokemon}."""
+Generate 5 story options for a 90-second nature documentary about {subject}."""
 
         self.log("Generating 5 story options...")
         result = self.llm.generate_with_continuation(
@@ -65,7 +65,7 @@ class StoryScriptStep(PipelineStep):
     requires_llm = True
 
     def execute(self) -> bool:
-        pokemon = self.state.pokemon_name
+        subject = self.state.subject_name
 
         # Get the selected option from story_options step metadata
         options_step = self.state.get_step(StepName.STORY_OPTIONS)
@@ -95,7 +95,7 @@ class StoryScriptStep(PipelineStep):
         if "## Saving Instructions" in script_prompt:
             script_prompt = script_prompt[:script_prompt.index("## Saving Instructions")].strip()
 
-        user_message = f"""Species Profile for {pokemon}:
+        user_message = f"""Species Profile for {subject}:
 
 {research}
 

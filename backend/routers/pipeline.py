@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from fastapi import APIRouter, HTTPException
 
-from backend.models import ApproveStepRequest, RetryStepRequest, RunStepRequest, StepName, StepStatus
+from backend.models import ApproveStepRequest, RegenerateAssetRequest, RetryStepRequest, RunStepRequest, StepName, StepStatus
 
 router = APIRouter(prefix="/api/pipeline", tags=["pipeline"])
 
@@ -18,15 +18,15 @@ router = APIRouter(prefix="/api/pipeline", tags=["pipeline"])
 _executor = ThreadPoolExecutor(max_workers=2)
 
 
-@router.post("/{pokemon_name}/run")
-async def run_step(pokemon_name: str, request: RunStepRequest) -> dict:
+@router.post("/{subject_name}/run")
+async def run_step(subject_name: str, request: RunStepRequest) -> dict:
     """
     Run a specific pipeline step.
     Executes in a background thread to avoid blocking the server.
     """
     from backend.pipeline.orchestrator import PipelineOrchestrator
 
-    orchestrator = PipelineOrchestrator(pokemon_name)
+    orchestrator = PipelineOrchestrator(subject_name)
     step_state = orchestrator.state.get_step(request.step)
 
     if step_state.status == StepStatus.RUNNING:
@@ -41,7 +41,7 @@ async def run_step(pokemon_name: str, request: RunStepRequest) -> dict:
     result = await loop.run_in_executor(_executor, _run)
 
     # Reload state after execution
-    orchestrator = PipelineOrchestrator(pokemon_name)
+    orchestrator = PipelineOrchestrator(subject_name)
     state = orchestrator.get_state()
     step = state.get_step(request.step)
 
@@ -55,8 +55,8 @@ async def run_step(pokemon_name: str, request: RunStepRequest) -> dict:
     }
 
 
-@router.post("/{pokemon_name}/approve")
-async def approve_step(pokemon_name: str, request: ApproveStepRequest) -> dict:
+@router.post("/{subject_name}/approve")
+async def approve_step(subject_name: str, request: ApproveStepRequest) -> dict:
     """
     Approve a step's output and optionally provide feedback.
     For story_options step, include selected_option (1-5).
@@ -64,7 +64,7 @@ async def approve_step(pokemon_name: str, request: ApproveStepRequest) -> dict:
     """
     from backend.pipeline.orchestrator import PipelineOrchestrator
 
-    orchestrator = PipelineOrchestrator(pokemon_name)
+    orchestrator = PipelineOrchestrator(subject_name)
     step_state = orchestrator.state.get_step(request.step)
 
     if step_state.status != StepStatus.AWAITING_APPROVAL:
@@ -83,7 +83,7 @@ async def approve_step(pokemon_name: str, request: ApproveStepRequest) -> dict:
                 return orchestrator.approve_step(request)
 
             result = await loop.run_in_executor(_executor, _approve_and_run_phase2)
-            orchestrator = PipelineOrchestrator(pokemon_name)
+            orchestrator = PipelineOrchestrator(subject_name)
             step = orchestrator.state.get_step(request.step)
 
             return {
@@ -97,7 +97,7 @@ async def approve_step(pokemon_name: str, request: ApproveStepRequest) -> dict:
     result = orchestrator.approve_step(request)
 
     # Reload state
-    orchestrator = PipelineOrchestrator(pokemon_name)
+    orchestrator = PipelineOrchestrator(subject_name)
     state = orchestrator.get_state()
 
     return {
@@ -108,12 +108,52 @@ async def approve_step(pokemon_name: str, request: ApproveStepRequest) -> dict:
     }
 
 
-@router.post("/{pokemon_name}/retry")
-async def retry_step(pokemon_name: str, request: RetryStepRequest) -> dict:
+@router.post("/{subject_name}/regenerate-asset")
+async def regenerate_asset(subject_name: str, request: RegenerateAssetRequest) -> dict:
+    """
+    Regenerate a single asset image with user feedback.
+    Only valid during asset_generation step while awaiting approval (Phase 1).
+    """
+    from backend.pipeline.orchestrator import PipelineOrchestrator
+    from backend.pipeline.s04_asset_generation import AssetGenerationStep
+
+    orchestrator = PipelineOrchestrator(subject_name)
+    step_state = orchestrator.state.get_step(request.step)
+
+    if request.step != StepName.ASSET_GENERATION:
+        raise HTTPException(status_code=400, detail="Regeneration only supported for asset_generation step")
+
+    if step_state.status != StepStatus.AWAITING_APPROVAL:
+        raise HTTPException(status_code=400, detail="Step is not awaiting approval")
+
+    if step_state.metadata.get("phase", 1) != 1:
+        raise HTTPException(status_code=400, detail="Regeneration only available during Phase 1")
+
+    asset_step = AssetGenerationStep(
+        state=orchestrator.state,
+        project_dir=orchestrator.project_dir,
+    )
+
+    loop = asyncio.get_event_loop()
+
+    def _regenerate():
+        return asset_step.regenerate_asset(request.asset_filename, request.feedback)
+
+    result = await loop.run_in_executor(_executor, _regenerate)
+
+    return {
+        "success": result,
+        "asset_filename": request.asset_filename,
+        "message": f"{'Regenerated' if result else 'Failed to regenerate'} {request.asset_filename}",
+    }
+
+
+@router.post("/{subject_name}/retry")
+async def retry_step(subject_name: str, request: RetryStepRequest) -> dict:
     """Retry a failed step."""
     from backend.pipeline.orchestrator import PipelineOrchestrator
 
-    orchestrator = PipelineOrchestrator(pokemon_name)
+    orchestrator = PipelineOrchestrator(subject_name)
 
     loop = asyncio.get_event_loop()
 
@@ -122,7 +162,7 @@ async def retry_step(pokemon_name: str, request: RetryStepRequest) -> dict:
 
     result = await loop.run_in_executor(_executor, _retry)
 
-    orchestrator = PipelineOrchestrator(pokemon_name)
+    orchestrator = PipelineOrchestrator(subject_name)
     step = orchestrator.state.get_step(request.step)
 
     return {
@@ -134,17 +174,18 @@ async def retry_step(pokemon_name: str, request: RetryStepRequest) -> dict:
     }
 
 
-@router.get("/{pokemon_name}/status")
-async def get_pipeline_status(pokemon_name: str) -> dict:
+@router.get("/{subject_name}/status")
+async def get_pipeline_status(subject_name: str) -> dict:
     """Get current pipeline status and all step states."""
     from backend.pipeline.orchestrator import PipelineOrchestrator
 
-    orchestrator = PipelineOrchestrator(pokemon_name)
+    orchestrator = PipelineOrchestrator(subject_name)
     state = orchestrator.get_state()
     next_step = orchestrator.get_next_step()
 
     return {
-        "pokemon_name": state.pokemon_name,
+        "subject_name": state.subject_name,
+        "theme": state.theme,
         "current_step": state.current_step,
         "next_step": next_step,
         "steps": {
@@ -161,8 +202,8 @@ async def get_pipeline_status(pokemon_name: str) -> dict:
     }
 
 
-@router.get("/{pokemon_name}/step/{step_name}")
-async def get_step_detail(pokemon_name: str, step_name: str) -> dict:
+@router.get("/{subject_name}/step/{step_name}")
+async def get_step_detail(subject_name: str, step_name: str) -> dict:
     """Get detailed state for a specific step including output and logs."""
     from backend.pipeline.orchestrator import PipelineOrchestrator
 
@@ -171,7 +212,7 @@ async def get_step_detail(pokemon_name: str, step_name: str) -> dict:
     except ValueError:
         raise HTTPException(status_code=400, detail=f"Invalid step: {step_name}")
 
-    orchestrator = PipelineOrchestrator(pokemon_name)
+    orchestrator = PipelineOrchestrator(subject_name)
     state = orchestrator.get_state()
     step_state = state.get_step(step)
     artifacts = orchestrator.get_artifacts(step)

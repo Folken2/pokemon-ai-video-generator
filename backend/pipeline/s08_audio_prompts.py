@@ -14,7 +14,7 @@ class AudioPromptsStep(PipelineStep):
     requires_llm = True
 
     def execute(self) -> bool:
-        pokemon = self.state.pokemon_name
+        subject = self.state.subject_name
 
         # Load the production script
         script = self.read_file("02_story_script.md")
@@ -34,7 +34,7 @@ class AudioPromptsStep(PipelineStep):
 
 ---
 
-Create the Audio Generation Table for {pokemon}. For each scene:
+Create the Audio Generation Table for {subject}. For each scene:
 1. Extract the narration text
 2. Count words and punctuation marks
 3. Calculate duration using the formula: Duration = (words / 2) + (total_punctuation * 2) + 1

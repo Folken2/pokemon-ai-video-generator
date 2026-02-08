@@ -5,12 +5,15 @@ All pipeline steps inherit from this for consistent logging, error handling, and
 
 from __future__ import annotations
 
+import asyncio
 import traceback
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from backend.models import PipelineState, StepName, StepStatus
 from backend.utils.logging_config import logger
+
+from backend.config import TELEGRAM_ENABLED
 
 if TYPE_CHECKING:
     from backend.services.llm_service import LLMService
@@ -47,9 +50,11 @@ class PipelineStep:
             if result:
                 self.state.set_step_status(self.step_name, StepStatus.AWAITING_APPROVAL)
                 self.log("Completed, awaiting approval.", level="info")
+                self._fire_telegram(StepStatus.AWAITING_APPROVAL)
             else:
                 self.state.set_step_status(self.step_name, StepStatus.FAILED)
                 self.log("Step failed.", level="error")
+                self._fire_telegram(StepStatus.FAILED)
 
             self.state.save(self.project_dir)
             return result
@@ -83,10 +88,45 @@ class PipelineStep:
         self.log(f"Wrote {relative_path}")
         return path
 
+    def _fire_telegram(self, status: StepStatus) -> None:
+        """Send Telegram notification if enabled. Safe to call from thread pool."""
+        if not TELEGRAM_ENABLED:
+            return
+        try:
+            from backend.services.telegram_service import fire_telegram_notification
+            preview = (self.step_state.output or "")[:300]
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                asyncio.run_coroutine_threadsafe(
+                    fire_telegram_notification(
+                        self.state.subject_name, self.step_name, status, preview
+                    ),
+                    loop,
+                )
+            else:
+                asyncio.run(
+                    fire_telegram_notification(
+                        self.state.subject_name, self.step_name, status, preview
+                    )
+                )
+        except Exception as e:
+            logger.warning(f"Telegram notification skipped: {e}")
+
     def load_sop_prompt(self, prompt_filename: str) -> str:
-        """Load an SOP prompt template from the prompts/ directory."""
+        """Load an SOP prompt template from the prompts/{theme}/ directory.
+        Falls back to prompts/ root if theme-specific file doesn't exist.
+        """
         from backend.config import PROMPTS_DIR
-        path = PROMPTS_DIR / prompt_filename
-        if path.exists():
-            return path.read_text()
-        raise FileNotFoundError(f"SOP prompt not found: {path}")
+        theme = self.state.theme
+
+        # Try theme-specific path first
+        theme_path = PROMPTS_DIR / theme / prompt_filename
+        if theme_path.exists():
+            return theme_path.read_text()
+
+        # Fall back to root prompts/ directory
+        root_path = PROMPTS_DIR / prompt_filename
+        if root_path.exists():
+            return root_path.read_text()
+
+        raise FileNotFoundError(f"SOP prompt not found: {theme_path} (also checked {root_path})")

@@ -1,6 +1,6 @@
 """
 Pipeline Orchestrator
-State machine that manages the lifecycle of a Pokemon documentary project.
+State machine that manages the lifecycle of a documentary project.
 Handles step execution, approval gates, and state transitions.
 """
 
@@ -55,11 +55,12 @@ STEP_CLASSES: dict[StepName, type[PipelineStep]] = {
 
 
 class PipelineOrchestrator:
-    """Manages the lifecycle of a Pokemon documentary project."""
+    """Manages the lifecycle of a documentary project."""
 
-    def __init__(self, pokemon_name: str):
-        self.pokemon_name = pokemon_name.lower().strip()
-        self.project_dir = get_project_dir(self.pokemon_name)
+    def __init__(self, subject_name: str, theme: str = "pokemon"):
+        self.subject_name = subject_name.lower().strip()
+        self.theme = theme
+        self.project_dir = get_project_dir(self.subject_name)
         self.state = self._load_or_create_state()
         self._llm: LLMService | None = None
 
@@ -73,13 +74,15 @@ class PipelineOrchestrator:
         """Load existing state or create new."""
         existing = PipelineState.load(self.project_dir)
         if existing:
-            logger.info(f"Loaded existing state for {self.pokemon_name} (step: {existing.current_step})")
+            # Sync theme from persisted state
+            self.theme = existing.theme
+            logger.info(f"Loaded existing state for {self.subject_name} (step: {existing.current_step})")
             return existing
 
-        state = PipelineState(pokemon_name=self.pokemon_name)
+        state = PipelineState(subject_name=self.subject_name, theme=self.theme)
         self.project_dir.mkdir(parents=True, exist_ok=True)
         state.save(self.project_dir)
-        logger.info(f"Created new project for {self.pokemon_name}")
+        logger.info(f"Created new project for {self.subject_name} (theme: {self.theme})")
         return state
 
     def get_state(self) -> PipelineState:

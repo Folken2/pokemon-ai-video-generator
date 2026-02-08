@@ -19,7 +19,7 @@ class VideoGenerationStep(PipelineStep):
     step_name = StepName.VIDEO_GENERATION
 
     def execute(self) -> bool:
-        pokemon = self.state.pokemon_name
+        subject = self.state.subject_name
 
         # Load video prompts
         prompts_md = self.read_file("04_video_prompts.md")

@@ -1,0 +1,151 @@
+theme: deep_sea
+subjects:
+  - name: anglerfish
+    display_name: Anglerfish
+    tags: [bioluminescent, predator, abyssal]
+    cinematic_rating: 5
+    description: "Deep-sea lure hunter. Bioluminescent esca, parasitic male fusion, midnight zone ambush specialist."
+
+  - name: giant_squid
+    display_name: Giant Squid
+    tags: [cephalopod, massive, elusive]
+    cinematic_rating: 5
+    description: "Architeuthis dux. 43-foot tentacles, basketball-sized eyes, sperm whale nemesis, deep twilight hunter."
+
+  - name: dumbo_octopus
+    display_name: Dumbo Octopus
+    tags: [cephalopod, deep, gentle]
+    cinematic_rating: 5
+    description: "Ear-finned octopus. Deepest-living octopus, umbrella pulsing locomotion, seafloor graceful drifter."
+
+  - name: gulper_eel
+    display_name: Gulper Eel
+    tags: [eel, deep, expandable]
+    cinematic_rating: 4
+    description: "Pelican eel. Balloon-like expandable mouth, bioluminescent tail tip, bathypelagic drifter."
+
+  - name: vampire_squid
+    display_name: Vampire Squid
+    tags: [cephalopod, ancient, bioluminescent]
+    cinematic_rating: 5
+    description: "Living fossil. Webbed cape display, bioluminescent photophores, marine snow feeder, oxygen minimum zone."
+
+  - name: colossal_squid
+    display_name: Colossal Squid
+    tags: [cephalopod, predator, antarctic]
+    cinematic_rating: 5
+    description: "Mesonychoteuthis. Rotating hook tentacle clubs, largest invertebrate, Antarctic deep hunter."
+
+  - name: barreleye
+    display_name: Barreleye Fish
+    tags: [fish, transparent, deep]
+    cinematic_rating: 5
+    description: "Macropinna microstoma. Transparent skull dome, upward-rotating tubular eyes, jellyfish food thief."
+
+  - name: blobfish
+    display_name: Blobfish
+    tags: [fish, deep, gelatinous]
+    cinematic_rating: 3
+    description: "Psychrolutes marcidus. Gelatinous body less dense than water, passive ambush feeder, 3,900 ft depth."
+
+  - name: giant_isopod
+    display_name: Giant Isopod
+    tags: [crustacean, scavenger, deep]
+    cinematic_rating: 4
+    description: "Bathynomus giganteus. 20-inch deep-sea pillbug, scavenger feasts, years without food, curl defense."
+
+  - name: fangtooth
+    display_name: Fangtooth Fish
+    tags: [fish, predator, deep]
+    cinematic_rating: 4
+    description: "Anoplogaster. Largest teeth relative to body size, pressure-adapted, bathypelagic ambush hunter."
+
+  - name: nautilus
+    display_name: Nautilus
+    tags: [cephalopod, ancient, shell]
+    cinematic_rating: 5
+    description: "Living fossil. 500-million-year lineage, chambered shell buoyancy, deep reef slope migrator."
+
+  - name: dragonfish
+    display_name: Black Dragonfish
+    tags: [fish, bioluminescent, predator]
+    cinematic_rating: 4
+    description: "Idiacanthus. Red bioluminescent spotlight invisible to prey, barbel lure, extreme sexual dimorphism."
+
+  - name: yeti_crab
+    display_name: Yeti Crab
+    tags: [crustacean, hydrothermal, symbiotic]
+    cinematic_rating: 4
+    description: "Kiwa hirsuta. Hairy chelipeds farming chemosynthetic bacteria, hydrothermal vent dancer."
+
+  - name: oarfish
+    display_name: Giant Oarfish
+    tags: [fish, massive, serpentine]
+    cinematic_rating: 5
+    description: "Regalecus glesne. 36-foot sea serpent legend, undulating fin locomotion, mesopelagic vertical migrator."
+
+  - name: japanese_spider_crab
+    display_name: Japanese Spider Crab
+    tags: [crustacean, massive, deep]
+    cinematic_rating: 4
+    description: "Macrocheira kaempferi. 12-foot leg span, deep Pacific dweller, kelp camouflage decorator."
+
+  - name: coelacanth
+    display_name: Coelacanth
+    tags: [fish, living fossil, lobe-finned]
+    cinematic_rating: 5
+    description: "Latimeria. 400-million-year living fossil, lobe fin walking motion, deep cave dweller, thought extinct."
+
+  - name: firefly_squid
+    display_name: Firefly Squid
+    tags: [cephalopod, bioluminescent, swarm]
+    cinematic_rating: 5
+    description: "Watasenia scintillans. Full-body photophore display, mass spawning light shows, Toyama Bay spectacle."
+
+  - name: hagfish
+    display_name: Hagfish
+    tags: [jawless, slime, ancient]
+    cinematic_rating: 4
+    description: "300-million-year jawless scavenger. Explosive slime defense, knot-tying body, carcass burrower."
+
+  - name: glass_sponge
+    display_name: Glass Sponge
+    tags: [sponge, silica, deep]
+    cinematic_rating: 3
+    description: "Hexactinellid. Silica fiber-optic skeleton, Venus flower basket, deep-reef colonial builder."
+
+  - name: frilled_shark
+    display_name: Frilled Shark
+    tags: [shark, ancient, deep]
+    cinematic_rating: 5
+    description: "Chlamydoselachus. 80-million-year living fossil, 300 trident teeth, serpentine strike, deep canyon hunter."
+
+  - name: christmas_tree_worm
+    display_name: Christmas Tree Worm
+    tags: [worm, coral, colorful]
+    cinematic_rating: 3
+    description: "Spirobranchus giganteus. Twin spiral feeding crowns, coral-embedded tube, lightning retraction reflex."
+
+  - name: mantis_shrimp
+    display_name: Mantis Shrimp
+    tags: [crustacean, powerful, colorful]
+    cinematic_rating: 5
+    description: "Stomatopod. Bullet-fast strike, 16-color vision, cavitation bubble punch, coral rubble territory."
+
+  - name: sunfish
+    display_name: Ocean Sunfish
+    tags: [fish, massive, surface]
+    cinematic_rating: 4
+    description: "Mola mola. Heaviest bony fish, 5,000 lb pancake body, surface basking, jellyfish specialist."
+
+  - name: siphonophore
+    display_name: Giant Siphonophore
+    tags: [colony, bioluminescent, massive]
+    cinematic_rating: 5
+    description: "Praya dubia. 130-foot colonial organism, each zooid specialized, bioluminescent deep-sea curtain."
+
+  - name: blue_ringed_octopus
+    display_name: Blue-Ringed Octopus
+    tags: [cephalopod, venomous, small]
+    cinematic_rating: 5
+    description: "Hapalochlaena. Golf-ball sized, tetrodotoxin lethal bite, iridescent warning rings, tidepool assassin."

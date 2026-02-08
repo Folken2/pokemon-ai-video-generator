@@ -1,0 +1,121 @@
+theme: harry_potter
+subjects:
+  - name: hippogriff
+    display_name: Hippogriff
+    tags: [flying, proud, magical beast]
+    cinematic_rating: 5
+    description: "Half-eagle, half-horse. Demands respectful bow, razor talons, fiercely loyal once trust is earned."
+
+  - name: phoenix
+    display_name: Phoenix
+    tags: [fire, rebirth, immortal]
+    cinematic_rating: 5
+    description: "Immortal firebird. Cyclical burning death and rebirth, healing tears, immense loyalty to pure hearts."
+
+  - name: thestral
+    display_name: Thestral
+    tags: [dark, flying, invisible]
+    cinematic_rating: 5
+    description: "Skeletal winged horse. Visible only to those who've witnessed death, gentle despite fearsome appearance."
+
+  - name: basilisk
+    display_name: Basilisk
+    tags: [serpent, deadly, ancient]
+    cinematic_rating: 5
+    description: "King of Serpents. Lethal gaze, venomous fangs, Parseltongue-controlled, sewer-dwelling apex predator."
+
+  - name: hungarian_horntail
+    display_name: Hungarian Horntail
+    tags: [dragon, fire, aggressive]
+    cinematic_rating: 5
+    description: "Most dangerous dragon breed. 50-foot flame range, spiked tail, nesting mother ferocity."
+
+  - name: niffler
+    display_name: Niffler
+    tags: [magical beast, treasure, burrowing]
+    cinematic_rating: 4
+    description: "Platypus-like treasure hunter. Insatiable attraction to shiny objects, expandable belly pouch."
+
+  - name: bowtruckle
+    display_name: Bowtruckle
+    tags: [tree guardian, tiny, camouflage]
+    cinematic_rating: 3
+    description: "Twig-like tree guardian. Wand-wood protector, lock-picking fingers, bark camouflage."
+
+  - name: acromantula
+    display_name: Acromantula
+    tags: [spider, colony, forbidden forest]
+    cinematic_rating: 5
+    description: "Giant sentient spider. Colony patriarch, human speech capable, Forbidden Forest web empire."
+
+  - name: centaur
+    display_name: Centaur
+    tags: [intelligent, forest, stargazer]
+    cinematic_rating: 4
+    description: "Half-human, half-horse. Star-reading divination, proud forest guardians, arrow-wielding warriors."
+
+  - name: norwegian_ridgeback
+    display_name: Norwegian Ridgeback
+    tags: [dragon, venomous, rare]
+    cinematic_rating: 4
+    description: "Rare dragon species. Ridge of spines, venomous fangs, sea-cliff nesting, aggressive from hatching."
+
+  - name: merpeople
+    display_name: Merpeople
+    tags: [aquatic, intelligent, territorial]
+    cinematic_rating: 4
+    description: "Underwater civilization. Mermish language, Black Lake dwellers, fierce guardians of their domain."
+
+  - name: grindylow
+    display_name: Grindylow
+    tags: [water demon, aggressive, tentacled]
+    cinematic_rating: 3
+    description: "Water demon. Strong tentacle grip, brittle fingers weakness, Black Lake pack hunters."
+
+  - name: erumpent
+    display_name: Erumpent
+    tags: [magical beast, explosive, rhinoceros]
+    cinematic_rating: 4
+    description: "Magical rhinoceros. Explosive horn fluid, thick hide deflects spells, African savanna grazer."
+
+  - name: thunderbird
+    display_name: Thunderbird
+    tags: [avian, storm, majestic]
+    cinematic_rating: 5
+    description: "Storm-creating bird. Danger-sensing, multiple wings, Arizona desert dweller, tempest summoner."
+
+  - name: occamy
+    display_name: Occamy
+    tags: [serpentine, silver, size-shifting]
+    cinematic_rating: 4
+    description: "Choranaptyxic serpent-bird. Grows or shrinks to fit space, silver shell eggs, fiercely protective."
+
+  - name: demiguise
+    display_name: Demiguise
+    tags: [invisible, primate, precognition]
+    cinematic_rating: 4
+    description: "Invisible ape-like creature. Precognitive sight, invisibility cloak hair, gentle herbivore."
+
+  - name: graphorn
+    display_name: Graphorn
+    tags: [large, aggressive, mountain]
+    cinematic_rating: 4
+    description: "Mountain-dwelling beast. Tentacled mouth, thick purple hide, aggressive but tameable."
+
+  - name: manticore
+    display_name: Manticore
+    tags: [hybrid, deadly, intelligent]
+    cinematic_rating: 5
+    description: "Human-faced lion with scorpion tail. Lethal sting, human speech, impenetrable hide."
+
+  - name: nundu
+    display_name: Nundu
+    tags: [feline, disease, dangerous]
+    cinematic_rating: 5
+    description: "Giant leopard. Toxic breath causes disease, requires 100 wizards to subdue, East African stalker."
+
+  - name: kelpie
+    display_name: Kelpie
+    tags: [shapeshifter, water, predator]
+    cinematic_rating: 4
+    description: "Aquatic shapeshifter. Horse form lures riders, drags victims underwater, Scottish loch hunter."

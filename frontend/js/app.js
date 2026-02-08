@@ -1,5 +1,5 @@
 /**
- * Main Application Logic for Pokemon Documentary Pipeline
+ * Main Application Logic for AI Documentary Pipeline
  */
 
 // --- State ---
@@ -63,8 +63,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Enter key on pokemon name input
-    document.getElementById('pokemon-name-input').addEventListener('keydown', (e) => {
+    // Enter key on subject name input
+    document.getElementById('subject-name-input').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') createProject();
     });
 });
@@ -90,6 +90,89 @@ async function checkApiStatus() {
     }
 }
 
+const THEME_LABELS = {
+    pokemon: 'Pokemon',
+    harry_potter: 'Harry Potter',
+    ancient_creatures: 'Ancient Creatures',
+    deep_sea: 'Deep Sea',
+};
+
+const THEME_PLACEHOLDERS = {
+    pokemon: 'e.g., pikachu, charizard, haunter',
+    harry_potter: 'e.g., phoenix, hippogriff, thestral',
+    ancient_creatures: 'e.g., tyrannosaurus, megalodon, woolly mammoth',
+    deep_sea: 'e.g., anglerfish, giant squid, dumbo octopus',
+};
+
+let subjectDropdownVisible = false;
+let subjectDebounceTimer = null;
+
+function updatePlaceholder() {
+    const theme = document.getElementById('theme-select').value;
+    document.getElementById('subject-name-input').placeholder = THEME_PLACEHOLDERS[theme] || '';
+    // Load subjects for the new theme
+    loadSubjectSuggestions('');
+}
+
+async function loadSubjectSuggestions(query) {
+    const theme = document.getElementById('theme-select').value;
+    const dropdown = document.getElementById('subject-dropdown');
+    try {
+        const subjects = await api.listSubjects(theme, query);
+        if (subjects.length === 0) {
+            dropdown.style.display = 'none';
+            return;
+        }
+        dropdown.innerHTML = subjects.map(s => `
+            <div class="subject-option px-3 py-2 hover:bg-gray-700 cursor-pointer flex items-center justify-between"
+                 onclick="selectSubject('${s.name}')">
+                <div class="min-w-0">
+                    <span class="text-white text-sm">${escapeHtmlInline(s.display_name)}</span>
+                    <span class="text-gray-500 text-xs ml-2">${escapeHtmlInline(s.description || '')}</span>
+                </div>
+                ${s.cinematic_rating ? `<span class="text-yellow-500 text-xs flex-shrink-0 ml-2">${'*'.repeat(s.cinematic_rating)}</span>` : ''}
+            </div>
+        `).join('');
+        dropdown.style.display = 'block';
+    } catch (e) {
+        dropdown.style.display = 'none';
+    }
+}
+
+function selectSubject(name) {
+    document.getElementById('subject-name-input').value = name;
+    document.getElementById('subject-dropdown').style.display = 'none';
+}
+
+function escapeHtmlInline(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function initSubjectInput() {
+    const input = document.getElementById('subject-name-input');
+    const dropdown = document.getElementById('subject-dropdown');
+
+    input.addEventListener('input', () => {
+        clearTimeout(subjectDebounceTimer);
+        subjectDebounceTimer = setTimeout(() => {
+            loadSubjectSuggestions(input.value.trim());
+        }, 150);
+    });
+
+    input.addEventListener('focus', () => {
+        loadSubjectSuggestions(input.value.trim());
+    });
+
+    // Close dropdown on outside click
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#subject-input-container')) {
+            dropdown.style.display = 'none';
+        }
+    });
+}
+
 async function loadProjects() {
     try {
         const projects = await api.listProjects();
@@ -98,8 +181,9 @@ async function loadProjects() {
         select.innerHTML = '<option value="">Select Project...</option>';
         projects.forEach(p => {
             const opt = document.createElement('option');
-            opt.value = p.pokemon_name;
-            opt.textContent = `${p.pokemon_name} (${p.progress})`;
+            opt.value = p.subject_name;
+            const themeLabel = THEME_LABELS[p.theme] || p.theme;
+            opt.textContent = `${p.subject_name} [${themeLabel}] (${p.progress})`;
             select.appendChild(opt);
         });
 
@@ -110,9 +194,9 @@ async function loadProjects() {
                 <p class="text-gray-500 text-sm mb-3">Or continue an existing project:</p>
                 <div class="flex flex-wrap gap-2 justify-center">
                     ${projects.map(p => `
-                        <button onclick="loadProject('${p.pokemon_name}')"
+                        <button onclick="loadProject('${p.subject_name}')"
                                 class="bg-gray-800 hover:bg-gray-700 border border-gray-700 px-4 py-2 rounded-lg text-sm">
-                            ${p.pokemon_name} <span class="text-gray-500">(${p.progress})</span>
+                            ${p.subject_name} <span class="text-gray-500">[${THEME_LABELS[p.theme] || p.theme}] (${p.progress})</span>
                         </button>
                     `).join('')}
                 </div>
@@ -126,7 +210,9 @@ async function loadProjects() {
 // --- Project Management ---
 function showNewProjectModal() {
     document.getElementById('new-project-modal').style.display = 'flex';
-    document.getElementById('pokemon-name-input').focus();
+    document.getElementById('subject-name-input').focus();
+    updatePlaceholder();
+    initSubjectInput();
 }
 
 function hideNewProjectModal() {
@@ -134,11 +220,12 @@ function hideNewProjectModal() {
 }
 
 async function createProject() {
-    const name = document.getElementById('pokemon-name-input').value.trim();
+    const name = document.getElementById('subject-name-input').value.trim();
+    const theme = document.getElementById('theme-select').value;
     if (!name) return;
 
     try {
-        await api.createProject(name);
+        await api.createProject(name, theme);
         hideNewProjectModal();
         await loadProjects();
         await loadProject(name);
@@ -147,9 +234,9 @@ async function createProject() {
     }
 }
 
-async function loadProject(pokemonName) {
-    currentProject = pokemonName;
-    document.getElementById('project-select').value = pokemonName;
+async function loadProject(subjectName) {
+    currentProject = subjectName;
+    document.getElementById('project-select').value = subjectName;
     document.getElementById('welcome-screen').style.display = 'none';
     document.getElementById('main-content').style.display = 'flex';
 
@@ -285,16 +372,31 @@ function renderStepDetail(detail) {
     // Artifacts
     const artifactSection = document.getElementById('artifacts-section');
     const gallery = document.getElementById('artifacts-gallery');
+    const isAssetPhase1Review = detail.name === 'asset_generation'
+        && detail.status === 'awaiting_approval'
+        && (detail.metadata?.phase || 1) === 1;
     if (detail.artifacts && detail.artifacts.length > 0) {
         artifactSection.style.display = '';
         gallery.innerHTML = detail.artifacts.map(a => {
             const fileUrl = `/files/${currentProject}/${a.path}`;
+            const filename = a.path.split('/').pop();
             if (a.type === 'image') {
+                const feedbackHtml = isAssetPhase1Review ? `
+                    <textarea id="feedback-${filename}" rows="2" placeholder="Feedback for regeneration..."
+                              class="w-full mt-2 bg-gray-800 border border-gray-700 rounded text-xs text-gray-300 p-2 resize-none"></textarea>
+                    <button onclick="regenerateAsset('${filename}')"
+                            id="regen-btn-${filename}"
+                            class="mt-1 w-full bg-amber-700 hover:bg-amber-600 text-white text-xs py-1 px-2 rounded">
+                        Regenerate
+                    </button>
+                ` : '';
                 return `
-                    <div class="group">
+                    <div class="group" id="asset-card-${filename}">
                         <img src="${fileUrl}" alt="${a.path}" class="artifact-thumb w-full"
+                             id="asset-img-${filename}"
                              onclick="window.open('${fileUrl}', '_blank')">
-                        <p class="text-xs text-gray-500 mt-1 truncate">${a.path.split('/').pop()}</p>
+                        <p class="text-xs text-gray-500 mt-1 truncate">${filename}</p>
+                        ${feedbackHtml}
                     </div>
                 `;
             } else if (a.type === 'audio') {
@@ -403,6 +505,41 @@ async function approveStorySelection() {
     } catch (e) {
         hideLoading();
         alert('Story selection failed: ' + e.message);
+    }
+}
+
+async function regenerateAsset(filename) {
+    if (!currentProject) return;
+
+    const textarea = document.getElementById(`feedback-${filename}`);
+    const feedback = textarea ? textarea.value.trim() : '';
+    if (!feedback) {
+        alert('Please provide feedback for regeneration.');
+        return;
+    }
+
+    const btn = document.getElementById(`regen-btn-${filename}`);
+    const img = document.getElementById(`asset-img-${filename}`);
+    const card = document.getElementById(`asset-card-${filename}`);
+
+    // Show loading state
+    if (btn) { btn.disabled = true; btn.textContent = 'Regenerating...'; }
+    if (card) card.style.opacity = '0.5';
+
+    try {
+        const result = await api.regenerateAsset(currentProject, filename, feedback);
+        if (result.success) {
+            // Refresh the image by busting cache
+            if (img) img.src = img.src.split('?')[0] + '?t=' + Date.now();
+            if (textarea) textarea.value = '';
+        } else {
+            alert('Regeneration failed: ' + (result.message || 'Unknown error'));
+        }
+    } catch (e) {
+        alert('Regeneration failed: ' + e.message);
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Regenerate'; }
+        if (card) card.style.opacity = '1';
     }
 }
 

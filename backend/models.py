@@ -1,5 +1,5 @@
 """
-Pydantic models for the Pokemon Documentary Pipeline.
+Pydantic models for the AI Documentary Pipeline.
 Defines data structures for pipeline state, steps, and API requests/responses.
 """
 
@@ -12,6 +12,13 @@ from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, Field
+
+
+# --- Themes ---
+
+AVAILABLE_THEMES = ["pokemon", "harry_potter", "ancient_creatures", "deep_sea"]
+
+DEFAULT_THEME = "pokemon"
 
 
 # --- Enums ---
@@ -109,7 +116,8 @@ class StepState(BaseModel):
 # --- Pipeline State ---
 
 class PipelineState(BaseModel):
-    pokemon_name: str
+    subject_name: str
+    theme: str = DEFAULT_THEME
     current_step: StepName = StepName.RESEARCH
     steps: dict[str, StepState] = Field(default_factory=dict)
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
@@ -147,6 +155,9 @@ class PipelineState(BaseModel):
         state_file = project_dir / "pipeline_state.json"
         if state_file.exists():
             data = json.loads(state_file.read_text())
+            # Backward compat: migrate pokemon_name → subject_name
+            if "pokemon_name" in data and "subject_name" not in data:
+                data["subject_name"] = data.pop("pokemon_name")
             return cls(**data)
         return None
 
@@ -154,7 +165,8 @@ class PipelineState(BaseModel):
 # --- API Request/Response Models ---
 
 class CreateProjectRequest(BaseModel):
-    pokemon_name: str
+    subject_name: str
+    theme: str = DEFAULT_THEME
 
 
 class RunStepRequest(BaseModel):
@@ -167,12 +179,19 @@ class ApproveStepRequest(BaseModel):
     selected_option: int | None = None  # For story selection step
 
 
+class RegenerateAssetRequest(BaseModel):
+    step: StepName
+    asset_filename: str
+    feedback: str
+
+
 class RetryStepRequest(BaseModel):
     step: StepName
 
 
 class ProjectSummary(BaseModel):
-    pokemon_name: str
+    subject_name: str
+    theme: str = DEFAULT_THEME
     current_step: StepName
     status: str  # Overall project status description
     steps: dict[str, StepState]

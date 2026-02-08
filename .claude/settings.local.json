@@ -1,7 +1,17 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(wc:*)",
+      "Bash(uv sync:*)",
+      "Bash(python3:*)",
+      "Bash(uv run python -c \"from backend.pipeline.orchestrator import PipelineOrchestrator; print\\(''Orchestrator import OK''\\)\")",
+      "Bash(cd:*)",
+      "Bash(uv run python:*)",
+      "Bash(python -c:*)",
+      "Bash(python:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs"
     ],
     "deny": [],
     "ask": []

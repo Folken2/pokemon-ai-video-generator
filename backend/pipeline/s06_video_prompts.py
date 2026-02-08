@@ -14,7 +14,7 @@ class VideoPromptsStep(PipelineStep):
     requires_llm = True
 
     def execute(self) -> bool:
-        pokemon = self.state.pokemon_name
+        subject = self.state.subject_name
 
         # Load prerequisites
         script = self.read_file("02_story_script.md")
@@ -45,7 +45,7 @@ Asset Manifest (SOP 03):
 
 ---
 
-Generate the complete Kling 2.5 Shot List for {pokemon}. Include:
+Generate the complete Kling 2.5 Shot List for {subject}. Include:
 - Character Asset column (specific .png filename)
 - Motion + Context Prompt column (action-first, camera-last)
 - Notes column (action shots, two-character scenes, etc.)"""
