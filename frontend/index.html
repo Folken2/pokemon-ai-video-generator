@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon AI Documentary Pipeline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-gray-900 border-b border-gray-800 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <h1 class="text-xl font-bold text-white">Pokemon AI Documentary Pipeline</h1>
+                <span id="api-status" class="text-xs px-2 py-1 rounded-full bg-gray-800 text-gray-400">Checking...</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <select id="project-select" class="bg-gray-800 border border-gray-700 rounded px-3 py-1.5 text-sm">
+                    <option value="">Select Project...</option>
+                </select>
+                <button onclick="showNewProjectModal()" class="bg-blue-600 hover:bg-blue-700 px-4 py-1.5 rounded text-sm font-medium">
+                    New Project
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="max-w-7xl mx-auto flex gap-6 p-6" id="main-content" style="display:none;">
+
+        <!-- Left: Pipeline Steps -->
+        <aside class="w-72 flex-shrink-0">
+            <div class="bg-gray-900 rounded-lg border border-gray-800 overflow-hidden">
+                <div class="px-4 py-3 bg-gray-800 border-b border-gray-700">
+                    <h2 class="font-semibold text-sm text-gray-300">PIPELINE STEPS</h2>
+                </div>
+                <div id="step-list" class="py-2">
+                    <!-- Steps populated by JS -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right: Step Detail -->
+        <main class="flex-1 min-w-0">
+            <div id="step-detail" class="bg-gray-900 rounded-lg border border-gray-800 overflow-hidden">
+                <div class="px-6 py-4 bg-gray-800 border-b border-gray-700 flex items-center justify-between">
+                    <div>
+                        <h2 id="step-title" class="font-semibold text-lg">Select a step</h2>
+                        <span id="step-status-badge" class="text-xs px-2 py-0.5 rounded-full"></span>
+                    </div>
+                    <div id="step-actions" class="flex gap-2">
+                        <!-- Action buttons populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Output area -->
+                <div id="step-output" class="p-6">
+                    <p class="text-gray-500">Select a pipeline step from the sidebar to view details.</p>
+                </div>
+
+                <!-- Artifacts gallery -->
+                <div id="artifacts-section" class="border-t border-gray-800 p-6" style="display:none;">
+                    <h3 class="text-sm font-semibold text-gray-400 mb-3">GENERATED ASSETS</h3>
+                    <div id="artifacts-gallery" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    </div>
+                </div>
+
+                <!-- Logs -->
+                <div id="logs-section" class="border-t border-gray-800 p-6" style="display:none;">
+                    <h3 class="text-sm font-semibold text-gray-400 mb-3">EXECUTION LOG</h3>
+                    <div id="logs-container" class="bg-gray-950 rounded p-4 font-mono text-xs max-h-64 overflow-y-auto">
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Welcome screen -->
+    <div id="welcome-screen" class="max-w-2xl mx-auto mt-20 text-center">
+        <h2 class="text-3xl font-bold mb-4">Real Life Pokemon Documentary Generator</h2>
+        <p class="text-gray-400 mb-8">
+            Turn any Pokemon into a 90-second photorealistic nature documentary.
+            Fully automated pipeline with human approval at every step.
+        </p>
+        <button onclick="showNewProjectModal()" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg text-lg font-medium">
+            Start New Project
+        </button>
+        <div id="existing-projects" class="mt-8"></div>
+    </div>
+
+    <!-- New Project Modal -->
+    <div id="new-project-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" style="display:none;">
+        <div class="bg-gray-900 rounded-xl border border-gray-700 p-6 w-96">
+            <h3 class="text-lg font-semibold mb-4">New Documentary Project</h3>
+            <label class="block text-sm text-gray-400 mb-1">Pokemon Name</label>
+            <input type="text" id="pokemon-name-input" placeholder="e.g., pikachu, charizard, haunter"
+                   class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white mb-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+            <div class="flex gap-3 justify-end">
+                <button onclick="hideNewProjectModal()" class="px-4 py-2 text-gray-400 hover:text-white">Cancel</button>
+                <button onclick="createProject()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded font-medium">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Story Selection Modal -->
+    <div id="story-select-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" style="display:none;">
+        <div class="bg-gray-900 rounded-xl border border-gray-700 p-6 w-[600px] max-h-[80vh] overflow-y-auto">
+            <h3 class="text-lg font-semibold mb-4">Select a Story Option</h3>
+            <div class="mb-4">
+                <label class="block text-sm text-gray-400 mb-1">Story Option (1-5)</label>
+                <input type="number" id="story-option-input" min="1" max="5" value="1"
+                       class="w-24 bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm text-gray-400 mb-1">Feedback (optional)</label>
+                <textarea id="story-feedback-input" rows="3" placeholder="Any adjustments you'd like..."
+                          class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+            </div>
+            <div class="flex gap-3 justify-end">
+                <button onclick="document.getElementById('story-select-modal').style.display='none'" class="px-4 py-2 text-gray-400 hover:text-white">Cancel</button>
+                <button onclick="approveStorySelection()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded font-medium">Select & Generate Script</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black/50 flex items-center justify-center z-40" style="display:none;">
+        <div class="bg-gray-900 rounded-xl border border-gray-700 p-8 text-center">
+            <div class="animate-spin w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p id="loading-text" class="text-gray-300">Processing...</p>
+        </div>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

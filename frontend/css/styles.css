@@ -1,0 +1,80 @@
+/* Custom styles for the pipeline UI */
+
+/* Markdown content styling */
+.markdown-content h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0 0.5rem; color: #e5e7eb; }
+.markdown-content h2 { font-size: 1.25rem; font-weight: 600; margin: 1rem 0 0.5rem; color: #d1d5db; }
+.markdown-content h3 { font-size: 1.1rem; font-weight: 600; margin: 0.75rem 0 0.5rem; color: #d1d5db; }
+.markdown-content h4 { font-size: 1rem; font-weight: 600; margin: 0.75rem 0 0.25rem; color: #9ca3af; }
+.markdown-content p { margin: 0.5rem 0; line-height: 1.6; color: #d1d5db; }
+.markdown-content ul, .markdown-content ol { margin: 0.5rem 0; padding-left: 1.5rem; color: #d1d5db; }
+.markdown-content li { margin: 0.25rem 0; }
+.markdown-content code { background: #1f2937; padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-size: 0.85rem; color: #93c5fd; }
+.markdown-content pre { background: #111827; border: 1px solid #374151; border-radius: 0.5rem; padding: 1rem; overflow-x: auto; margin: 0.75rem 0; }
+.markdown-content pre code { background: none; padding: 0; color: #d1d5db; }
+.markdown-content table { border-collapse: collapse; width: 100%; margin: 0.75rem 0; }
+.markdown-content th, .markdown-content td { border: 1px solid #374151; padding: 0.5rem 0.75rem; text-align: left; }
+.markdown-content th { background: #1f2937; font-weight: 600; color: #9ca3af; }
+.markdown-content td { color: #d1d5db; }
+.markdown-content blockquote { border-left: 3px solid #3b82f6; padding-left: 1rem; margin: 0.75rem 0; color: #9ca3af; }
+.markdown-content hr { border-color: #374151; margin: 1rem 0; }
+.markdown-content strong { color: #f9fafb; }
+
+/* Step list items */
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.15s;
+    border-left: 3px solid transparent;
+}
+.step-item:hover { background-color: #1f2937; }
+.step-item.active { background-color: #1e293b; border-left-color: #3b82f6; }
+.step-item.completed .step-icon { background-color: #22c55e; color: white; }
+.step-item.running .step-icon { background-color: #3b82f6; color: white; animation: pulse 2s infinite; }
+.step-item.awaiting .step-icon { background-color: #f59e0b; color: white; }
+.step-item.failed .step-icon { background-color: #ef4444; color: white; }
+
+.step-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background-color: #374151;
+    color: #9ca3af;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Status badges */
+.badge-pending { background-color: #374151; color: #9ca3af; }
+.badge-running { background-color: #1e40af; color: #93c5fd; }
+.badge-awaiting { background-color: #92400e; color: #fcd34d; }
+.badge-approved { background-color: #166534; color: #86efac; }
+.badge-failed { background-color: #991b1b; color: #fca5a5; }
+
+/* Artifact thumbnails */
+.artifact-thumb {
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    border-radius: 0.375rem;
+    border: 1px solid #374151;
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+.artifact-thumb:hover { transform: scale(1.05); }
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #111827; }
+::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #4b5563; }
